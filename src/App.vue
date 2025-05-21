@@ -4,6 +4,7 @@ import { useFetch, useFetchSearch } from './utils/useFetch.js'
 
 export default {
   setup() {
+    const API_BASE_URL = 'https://dummyjson.com'
     const searchQuery = ref('')
     const recipesList = ref([])
     const error = ref(null)
@@ -17,7 +18,7 @@ export default {
     const fetchData = async () => {
       try {
         loading.value = true
-        const response = await useFetch('https://dummyjson.com/recipes')
+        const response = await useFetch(`${API_BASE_URL}/recipes`)
         recipesList.value = response.recipes
       } catch (err) {
         error.value = err
@@ -31,7 +32,7 @@ export default {
         loading.value = true
         error.value = null
         const response = await useFetchSearch(
-          `https://dummyjson.com/recipes/search?q=${searchQuery.value}`,
+          `${API_BASE_URL}/recipes/search?q=${searchQuery.value}`,
         )
         recipesList.value = response.recipes
       } catch (err) {
@@ -165,14 +166,6 @@ export default {
   display: flex;
   flex-direction: row;
   gap: 10px;
-}
-
-.col-1 {
-  width: 50%;
-}
-
-.col-2 {
-  width: 50%;
 }
 
 img.recipe-icon-img {
