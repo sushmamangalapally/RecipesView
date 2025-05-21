@@ -1,7 +1,7 @@
 <script>
 import { ref, watch, onMounted } from 'vue'
 import { useFetch, useFetchSearch } from './utils/useFetch.js'
-
+import { minutesToHours } from './utils/utils.js'
 export default {
   setup() {
     const API_BASE_URL = 'https://dummyjson.com'
@@ -61,6 +61,7 @@ export default {
       loading,
       displayRecipe,
       selectedRecipe,
+      minutesToHours,
     }
   },
 }
@@ -101,6 +102,13 @@ export default {
         <div v-else>
           <h2>{{ selectedRecipe.name }}</h2>
           <img class="recipe-content-img" :src="selectedRecipe.image" />
+          <div>
+            <label>Cook Time:</label>
+            <p>
+              {{ selectedRecipe.cookTimeMinutes }} minutes &rarr;
+              {{ minutesToHours(selectedRecipe.cookTimeMinutes) }} hrs
+            </p>
+          </div>
           <div>
             <label>Ingredients:</label>
             <div class="recipe-content">
