@@ -6,6 +6,7 @@ export default {
   setup() {
     const API_BASE_URL = 'https://dummyjson.com'
     const searchQuery = ref('')
+    const debouncedSearchQuery = ref('')
     const recipesList = ref([])
     const error = ref(null)
     const loading = ref(false)
@@ -42,17 +43,25 @@ export default {
       }
     }
 
-    watch(searchQuery, async (newSearchQuery) => {
-      if (newSearchQuery && newSearchQuery.length) {
+    function displayRecipe(recipeID) {
+      selectedRecipe.value = recipesList.value.filter((recipe) => recipe.id == recipeID)[0]
+    }
+
+    let timeoutId
+    function handleTextChange() {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        debouncedSearchQuery.value = searchQuery.value
+      }, 500)
+    }
+
+    watch(debouncedSearchQuery, async (newDebouncedSearchQuery) => {
+      if (newDebouncedSearchQuery && newDebouncedSearchQuery.length) {
         await fetchedSearchedData()
       } else {
         await fetchData()
       }
     })
-
-    function displayRecipe(recipeID) {
-      selectedRecipe.value = recipesList.value.filter((recipe) => recipe.id == recipeID)[0]
-    }
 
     return {
       searchQuery,
@@ -62,6 +71,7 @@ export default {
       displayRecipe,
       selectedRecipe,
       minutesToHours,
+      handleTextChange,
     }
   },
 }
@@ -76,6 +86,7 @@ export default {
         placeholder="Search recipe..."
         class="search-input"
         v-model="searchQuery"
+        @input="handleTextChange"
       />
     </div>
     <div class="main-content">
